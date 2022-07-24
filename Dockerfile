@@ -38,21 +38,23 @@ RUN wget \
 
 # -- install package --
 RUN conda update --all -y \ 
+    && pip3 install --upgrade pip \
     && python -m pip install --upgrade pip
-RUN python -m pip install transformers
+RUN python -m pip install transformers numpy
 RUN conda install -c conda-forge jupyterlab -y \
     && conda install -c conda-forge implicit -y \
     && conda install bottleneck -y \
-    && conda install jupyter numpy -y \
-    && python -m pip install pandas requests tqdm seaborn tensorflow ipykernel keras lightgbm ipywidgets lxml \
-    && python -m pip install scikit-learn \
-    && python -m pip install pyfolio xgboost \
-    && pip install finlab_crypto talib-binary yfinance PyPortfolioOpt ffn \
+    && conda install jupyter pandas -y
+RUN python -m pip install scikit-learn requests tqdm\
+    && python -m pip install pyfolio xgboost
+RUN pip install finlab_crypto talib-binary yfinance PyPortfolioOpt ffn \
     && pip install --upgrade google-cloud-storage --upgrade google-api-python-client pygsheets \
     && pip install gspread-dataframe gspread python-binance Twisted service_identity
 RUN conda install -c conda-forge pyreadstat -y \
     && conda install -c conda-forge matplotlib -y \
-    && pip install shioaji -y
+    && pip install shioaji
+RUN python -m pip install seaborn ipykernel ipywidgets lxml
+RUN python -m pip install tensorflow lightgbm keras
 
 # -- install package --
 

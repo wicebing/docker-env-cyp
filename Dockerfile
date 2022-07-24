@@ -1,5 +1,6 @@
 # docker build -t wicebing/env-cyp .
 # sudo docker run -d -p 22222:22 -p 28888:8888 -v /home/bixea6000/docker_data:/root/data --name my_server wicebing/env-cyp
+# sudo docker run --gpus all -d -p 21111:22 -p 21112:8888 -v /home/bixa6000/ehrs:/root/data --name my_ehrs wicebing/env-ehrs:gpus
 # sudo docker exec my_server cat /etc/hosts
 
 # sudo rm -rf  /root/.ssh/known_hosts 
@@ -9,13 +10,16 @@
 # jupyter lab  --port=8888 --allow-root --ip=0.0.0.0
 
 
-FROM ubuntu:20.04
-  
-RUN apt-get update \ 
+FROM nvidia/cuda:11.4.2-devel-ubuntu20.04
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y tzdata \ 
     && apt-get install -y openssh-server \
     && apt-get install -y wget \ 
     && apt-get install -y build-essential \
     && apt-get install -y screen \
+    && apt-get install -y htop \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /root/data
 
@@ -34,8 +38,9 @@ RUN wget \
 
 # -- install package --
 RUN conda update --all -y \ 
-    && pip3 install --upgrade pip \
-    && conda install -c conda-forge jupyterlab -y \
+    && python -m pip install --upgrade pip
+RUN python -m pip install transformers
+RUN conda install -c conda-forge jupyterlab -y \
     && conda install -c conda-forge implicit -y \
     && conda install bottleneck -y \
     && conda install jupyter -y \
@@ -45,12 +50,16 @@ RUN conda update --all -y \
     && pip install finlab_crypto talib-binary yfinance PyPortfolioOpt ffn \
     && pip install --upgrade google-cloud-storage --upgrade google-api-python-client pygsheets \
     && pip install gspread-dataframe gspread python-binance Twisted service_identity
+RUN conda install -c conda-forge pyreadstat -y \
+    && conda install -c conda-forge matplotlib -y \
+    && pip install shioaji -y
+
 # -- install package --
 
 
 # -- set ssh --
 RUN mkdir /var/run/sshd \ 
-    && echo 'root:screencast' | chpasswd
+    && echo 'root:bixe' | chpasswd
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \

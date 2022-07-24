@@ -43,8 +43,8 @@ RUN python -m pip install transformers
 RUN conda install -c conda-forge jupyterlab -y \
     && conda install -c conda-forge implicit -y \
     && conda install bottleneck -y \
-    && conda install jupyter -y \
-    && python -m pip install pandas requests tqdm seaborn tensorflow ipykernel keras lightgbm ipywidgets lxml numpy \
+    && conda install jupyter numpy -y \
+    && python -m pip install pandas requests tqdm seaborn tensorflow ipykernel keras lightgbm ipywidgets lxml \
     && python -m pip install scikit-learn \
     && python -m pip install pyfolio xgboost \
     && pip install finlab_crypto talib-binary yfinance PyPortfolioOpt ffn \
